@@ -11,10 +11,13 @@ import {
     TrendingDown,
     Trash2,
     Crown,
-    Loader2
+    Loader2,
+    Zap,
+    Flame,
+    Lock
 } from 'lucide-react'
 import { Button, Badge, Card } from '@/components/ui'
-import { useAIStore, generateAIResponse, ChatMessage } from '@/stores/aiStore'
+import { useAIStore, generateAIResponse, QUICK_PROMPTS, ChatMessage } from '@/stores/aiStore'
 import { useTradingStore } from '@/stores/tradingStore'
 import { clsx } from 'clsx'
 import ReactMarkdown from 'react-markdown'
@@ -31,43 +34,51 @@ export const AIAssistant = () => {
         addMessage,
         isLoading,
         setLoading,
-        dailyQueriesUsed,
-        dailyQueryLimit,
         incrementQueryCount,
-        clearMessages
+        clearMessages,
+        getRemainingQueries,
+        getQueryLimit,
+        isLimitReached,
+        userTier,
+        consecutiveDays,
+        bonusQueriesEarned,
     } = useAIStore()
 
-    const { selectedSymbol, tickerData } = useTradingStore()
-    const currentTicker = tickerData[selectedSymbol]
+    const { selectedCrypto, tickerData, realtimePrices } = useTradingStore()
+    const currentPrice = realtimePrices[selectedCrypto]?.price || tickerData[selectedCrypto]?.price || 0
+
+    const remaining = getRemainingQueries()
+    const limit = getQueryLimit()
+    const isUnlimited = limit === -1
 
     // Scroll to bottom when new messages arrive
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
-    const handleSendMessage = async () => {
-        if (!inputValue.trim() || isLoading) return
+    const handleSendMessage = async (customMessage?: string) => {
+        const messageToSend = customMessage || inputValue.trim()
+        if (!messageToSend || isLoading) return
 
         // Check query limit
-        if (!incrementQueryCount()) {
+        const result = incrementQueryCount()
+        if (!result.success) {
             addMessage({
                 role: 'assistant',
-                content: '⚠️ You\'ve reached your daily query limit. Upgrade to a higher tier for more AI queries!',
+                content: `⚠️ **Daily limit reached!**\n\nYou've used all ${limit} AI queries for today.\n\n🔓 **Upgrade to get more:**\n- Starter: 25/day\n- Pro: 100/day\n- Ultimate: Unlimited\n\n[View Plans](/pricing)`,
             })
             return
         }
 
-        const userMessage = inputValue.trim()
         setInputValue('')
 
         // Add user message
-        addMessage({ role: 'user', content: userMessage })
+        addMessage({ role: 'user', content: messageToSend })
 
         // Generate AI response
         setLoading(true)
         try {
-            const currentPrice = currentTicker?.price || 0
-            const response = await generateAIResponse(userMessage, selectedSymbol, currentPrice)
+            const response = await generateAIResponse(messageToSend, selectedCrypto, currentPrice)
 
             addMessage({
                 role: 'assistant',
@@ -77,55 +88,61 @@ export const AIAssistant = () => {
         } catch (error) {
             addMessage({
                 role: 'assistant',
-                content: 'Sorry, I encountered an error processing your request. Please try again.',
+                content: '❌ Sorry, I encountered an error. Please try again.',
             })
         } finally {
             setLoading(false)
         }
     }
 
-    const handleQuickAction = (action: string) => {
-        const symbol = selectedSymbol.replace('USDT', '')
-        switch (action) {
-            case 'analyze':
-                setInputValue(`Analyze ${symbol}`)
-                break
-            case 'predict':
-                setInputValue(`Predict ${symbol} price`)
-                break
-            case 'risk':
-                setInputValue(`Assess risk for ${symbol}`)
-                break
-        }
-        inputRef.current?.focus()
+    const handleQuickPrompt = (prompt: string) => {
+        const symbol = selectedCrypto.replace('USDT', '')
+        handleSendMessage(prompt.replace('this crypto', symbol))
     }
-
-    const queriesRemaining = dailyQueryLimit - dailyQueriesUsed
 
     return (
         <Card padding="none" className="h-[calc(100vh-140px)] flex flex-col sticky top-24">
             {/* Header */}
-            <div className="p-4 border-b border-white/5 flex items-center justify-between">
+            <div className="p-4 border-b border-border/50 flex items-center justify-between bg-gradient-to-r from-purple-500/5 to-blue-500/5">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-secondary to-purple-500 rounded-xl flex items-center justify-center shadow-glow-sm">
+                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
                         <Bot size={20} className="text-white" />
                     </div>
                     <div>
-                        <h3 className="font-semibold">{t('ai.title')}</h3>
-                        <p className="text-xs text-text-muted flex items-center gap-1">
+                        <h3 className="font-semibold flex items-center gap-2">
+                            Quantix AI
+                            {userTier !== 'free' && (
+                                <Badge variant="default" className="text-[10px] px-1.5 py-0">
+                                    <Crown size={10} className="mr-0.5" />
+                                    {userTier.toUpperCase()}
+                                </Badge>
+                            )}
+                        </h3>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                            Online • {selectedSymbol.replace('USDT', '/USDT')}
-                        </p>
+                            <span>Online</span>
+                            <span>•</span>
+                            <span className="font-mono">{selectedCrypto.replace('USDT', '/USDT')}</span>
+                        </div>
                     </div>
                 </div>
 
-                <button
-                    onClick={clearMessages}
-                    className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-tertiary rounded-button transition-colors"
-                    title="Clear chat"
-                >
-                    <Trash2 size={16} />
-                </button>
+                <div className="flex items-center gap-2">
+                    {/* Streak indicator */}
+                    {consecutiveDays > 1 && (
+                        <div className="flex items-center gap-1 text-orange-400 text-xs">
+                            <Flame size={14} />
+                            <span>{consecutiveDays}d</span>
+                        </div>
+                    )}
+                    <button
+                        onClick={clearMessages}
+                        className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                        title="Clear chat"
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                </div>
             </div>
 
             {/* Messages */}
@@ -147,29 +164,36 @@ export const AIAssistant = () => {
                                 className={clsx(
                                     'max-w-[90%] rounded-2xl px-4 py-3',
                                     message.role === 'user'
-                                        ? 'bg-accent-primary text-bg-primary rounded-br-sm'
-                                        : 'bg-bg-tertiary text-text-primary rounded-bl-sm'
+                                        ? 'bg-primary text-primary-foreground rounded-br-sm'
+                                        : 'bg-muted text-foreground rounded-bl-sm'
                                 )}
                             >
-                                {/* Message Content */}
-                                <div className={clsx(
-                                    'text-sm prose prose-sm max-w-none',
-                                    message.role === 'user' ? 'prose-invert' : ''
-                                )}>
+                                {/* Message Content with Markdown */}
+                                <div className="text-sm prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-headings:my-2 prose-table:my-2 prose-table:text-xs">
                                     {message.role === 'assistant' ? (
-                                        <div className="whitespace-pre-wrap">
-                                            {message.content.split('\n').map((line, i) => (
-                                                <div key={i}>
-                                                    {line.startsWith('**') && line.endsWith('**') ? (
-                                                        <strong>{line.slice(2, -2)}</strong>
-                                                    ) : line.startsWith('• ') ? (
-                                                        <div className="ml-2">{line}</div>
-                                                    ) : (
-                                                        line
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
+                                        <ReactMarkdown
+                                            components={{
+                                                h2: ({ children }) => <h2 className="text-base font-bold mt-3 mb-2">{children}</h2>,
+                                                h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-1">{children}</h3>,
+                                                table: ({ children }) => (
+                                                    <table className="w-full text-xs border-collapse my-2">{children}</table>
+                                                ),
+                                                th: ({ children }) => (
+                                                    <th className="text-left px-2 py-1 bg-background/50 font-medium border-b border-border">{children}</th>
+                                                ),
+                                                td: ({ children }) => (
+                                                    <td className="px-2 py-1 border-b border-border/50">{children}</td>
+                                                ),
+                                                blockquote: ({ children }) => (
+                                                    <blockquote className="border-l-2 border-warning pl-2 text-xs text-muted-foreground italic my-2">{children}</blockquote>
+                                                ),
+                                                a: ({ children, href }) => (
+                                                    <a href={href} className="text-primary hover:underline">{children}</a>
+                                                ),
+                                            }}
+                                        >
+                                            {message.content}
+                                        </ReactMarkdown>
                                     ) : (
                                         message.content
                                     )}
@@ -177,14 +201,14 @@ export const AIAssistant = () => {
 
                                 {/* Prediction Badge */}
                                 {message.metadata?.prediction && (
-                                    <div className="mt-3 pt-3 border-t border-white/10">
+                                    <div className="mt-3 pt-3 border-t border-border/50">
                                         <div className="flex items-center gap-2">
                                             {message.metadata.prediction.direction === 'bullish' ? (
                                                 <Badge variant="success" className="gap-1">
                                                     <TrendingUp size={12} /> Bullish
                                                 </Badge>
                                             ) : message.metadata.prediction.direction === 'bearish' ? (
-                                                <Badge variant="danger" className="gap-1">
+                                                <Badge variant="destructive" className="gap-1">
                                                     <TrendingDown size={12} /> Bearish
                                                 </Badge>
                                             ) : (
@@ -192,7 +216,7 @@ export const AIAssistant = () => {
                                                     Neutral
                                                 </Badge>
                                             )}
-                                            <span className="text-xs text-text-muted">
+                                            <span className="text-xs text-muted-foreground">
                                                 {message.metadata.prediction.confidence.toFixed(0)}% confidence
                                             </span>
                                         </div>
@@ -202,7 +226,7 @@ export const AIAssistant = () => {
                                 {/* Timestamp */}
                                 <p className={clsx(
                                     'text-[10px] mt-2',
-                                    message.role === 'user' ? 'text-bg-secondary/70' : 'text-text-muted'
+                                    message.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                                 )}>
                                     {new Date(message.timestamp).toLocaleTimeString([], {
                                         hour: '2-digit',
@@ -221,10 +245,14 @@ export const AIAssistant = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex justify-start"
                     >
-                        <div className="bg-bg-tertiary rounded-2xl rounded-bl-sm px-4 py-3">
-                            <div className="flex items-center gap-2 text-text-muted">
-                                <Loader2 size={14} className="animate-spin" />
-                                <span className="text-sm">Analyzing...</span>
+                        <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3">
+                            <div className="flex items-center gap-2">
+                                <div className="flex gap-1">
+                                    <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                    <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                    <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                </div>
+                                <span className="text-sm text-muted-foreground">Analyzing...</span>
                             </div>
                         </div>
                     </motion.div>
@@ -233,65 +261,85 @@ export const AIAssistant = () => {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Actions */}
-            <div className="px-3 py-2 border-t border-white/5">
-                <div className="flex gap-2">
-                    {[
-                        { id: 'analyze', label: t('ai.actions.analyze'), icon: BarChart3 },
-                        { id: 'predict', label: t('ai.actions.predict'), icon: Sparkles },
-                        { id: 'risk', label: 'Risk', icon: AlertTriangle },
-                    ].map((action) => (
+            {/* Quick Prompts */}
+            <div className="px-3 py-2 border-t border-border/50">
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                    {QUICK_PROMPTS.map((item, idx) => (
                         <button
-                            key={action.id}
-                            onClick={() => handleQuickAction(action.id)}
-                            disabled={isLoading}
-                            className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 bg-bg-tertiary hover:bg-accent-primary/10 text-text-secondary hover:text-accent-primary rounded-button text-xs font-medium transition-colors disabled:opacity-50"
+                            key={idx}
+                            onClick={() => handleQuickPrompt(item.prompt)}
+                            disabled={isLoading || isLimitReached()}
+                            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary rounded-full text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <action.icon size={14} />
-                            {action.label}
+                            {item.label}
                         </button>
                     ))}
                 </div>
             </div>
 
             {/* Input Area */}
-            <div className="p-3 border-t border-white/5">
+            <div className="p-3 border-t border-border/50">
                 <div className="flex gap-2">
                     <input
                         ref={inputRef}
                         type="text"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                        placeholder={t('ai.placeholder')}
-                        disabled={isLoading}
-                        className="flex-1 px-4 py-2.5 bg-bg-tertiary rounded-input text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary/50 disabled:opacity-50"
+                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                        placeholder={isLimitReached() ? 'Daily limit reached...' : 'Ask about trading...'}
+                        disabled={isLoading || isLimitReached()}
+                        className="flex-1 px-4 py-2.5 bg-muted rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                     <Button
-                        onClick={handleSendMessage}
-                        disabled={!inputValue.trim() || isLoading}
+                        onClick={() => handleSendMessage()}
+                        disabled={!inputValue.trim() || isLoading || isLimitReached()}
                         className="px-4"
                     >
-                        <Send size={18} />
+                        {isLimitReached() ? <Lock size={18} /> : <Send size={18} />}
                     </Button>
                 </div>
 
-                {/* Query Limit */}
-                <div className="mt-3 flex items-center justify-between text-xs">
-                    <div className={clsx(
-                        'flex items-center gap-1.5',
-                        queriesRemaining <= 2 ? 'text-warning' : 'text-text-muted'
-                    )}>
-                        <span>{t('ai.dailyQueries')}: {dailyQueriesUsed}/{dailyQueryLimit}</span>
+                {/* Query Usage Bar */}
+                <div className="mt-3 space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                        <div className={clsx(
+                            'flex items-center gap-1.5',
+                            remaining <= 1 && !isUnlimited ? 'text-destructive' : remaining <= 3 && !isUnlimited ? 'text-warning' : 'text-muted-foreground'
+                        )}>
+                            <Zap size={12} />
+                            <span>
+                                {isUnlimited
+                                    ? 'Unlimited queries'
+                                    : `${remaining} queries remaining`}
+                            </span>
+                            {bonusQueriesEarned > 0 && (
+                                <span className="text-success">(+{bonusQueriesEarned} bonus)</span>
+                            )}
+                        </div>
+                        {!isUnlimited && remaining <= 3 && (
+                            <a
+                                href="/pricing"
+                                className="flex items-center gap-1 text-primary hover:underline"
+                            >
+                                <Crown size={12} />
+                                Upgrade
+                            </a>
+                        )}
                     </div>
-                    {queriesRemaining <= 2 && (
-                        <a
-                            href="/pricing"
-                            className="flex items-center gap-1 text-accent-primary hover:underline"
-                        >
-                            <Crown size={12} />
-                            {t('ai.upgrade')}
-                        </a>
+
+                    {/* Progress bar */}
+                    {!isUnlimited && (
+                        <div className="h-1 bg-muted rounded-full overflow-hidden">
+                            <motion.div
+                                className={clsx(
+                                    'h-full rounded-full',
+                                    remaining <= 1 ? 'bg-destructive' : remaining <= 3 ? 'bg-warning' : 'bg-primary'
+                                )}
+                                initial={{ width: '100%' }}
+                                animate={{ width: `${(remaining / (limit + bonusQueriesEarned)) * 100}%` }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        </div>
                     )}
                 </div>
             </div>
