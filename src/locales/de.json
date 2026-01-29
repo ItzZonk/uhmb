@@ -1,0 +1,46 @@
+{
+    "nav": {
+        "home": "Startseite",
+        "trading": "Handel",
+        "simulation": "Simulation",
+        "pricing": "Preise",
+        "support": "Support",
+        "login": "Anmelden",
+        "signup": "Registrieren"
+    },
+    "hero": {
+        "title": "Krypto-Trading mit KI Meistern",
+        "subtitle": "Echtzeit-Marktdaten • KI-Vorhersagen • Risikofreie Übungsumgebung",
+        "cta": "Jetzt Ausprobieren",
+        "watchDemo": "Demo Ansehen",
+        "trustedBy": "Vertraut von {{count}} Händlern weltweit"
+    },
+    "features": {
+        "title": "Was ist Quantix?",
+        "subtitle": "Der intelligentere Weg, Kryptowährungshandel zu lernen",
+        "ai": {
+            "title": "KI-Gestützte Vorhersagen",
+            "description": "Erhalten Sie intelligente Marktanalysen und Handelsvorschläge, unterstützt durch fortschrittliche Machine-Learning-Modelle."
+        },
+        "realtime": {
+            "title": "Echtzeit-Marktdaten",
+            "description": "Zugang zu Live-Kryptowährungspreisen mit sekundengenauen Updates von führenden Börsen."
+        },
+        "safe": {
+            "title": "Risikofreies Üben",
+            "description": "Üben Sie den Handel mit virtuellem Geld. Lernen Sie aus Fehlern, ohne echtes Geld zu verlieren."
+        }
+    },
+    "common": {
+        "loading": "Wird geladen...",
+        "error": "Etwas ist schief gelaufen",
+        "retry": "Erneut versuchen",
+        "cancel": "Abbrechen",
+        "confirm": "Bestätigen",
+        "save": "Speichern",
+        "back": "Zurück",
+        "next": "Weiter",
+        "finish": "Fertig",
+        "close": "Schließen"
+    }
+}

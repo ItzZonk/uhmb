@@ -1,0 +1,46 @@
+{
+    "nav": {
+        "home": "Accueil",
+        "trading": "Trading",
+        "simulation": "Simulation",
+        "pricing": "Tarifs",
+        "support": "Support",
+        "login": "Connexion",
+        "signup": "S'inscrire"
+    },
+    "hero": {
+        "title": "Maîtrisez le Trading Crypto avec l'IA",
+        "subtitle": "Données de marché en temps réel • Prédictions IA • Environnement d'entraînement sans risque",
+        "cta": "Essayer Maintenant",
+        "watchDemo": "Voir la Démo",
+        "trustedBy": "Fait confiance par {{count}} traders dans le monde"
+    },
+    "features": {
+        "title": "Qu'est-ce que Quantix?",
+        "subtitle": "La manière intelligente d'apprendre le trading de crypto-monnaies",
+        "ai": {
+            "title": "Prédictions Alimentées par l'IA",
+            "description": "Obtenez des analyses de marché intelligentes et des suggestions de trading propulsées par des modèles avancés d'apprentissage automatique."
+        },
+        "realtime": {
+            "title": "Données de Marché en Temps Réel",
+            "description": "Accédez aux prix des crypto-monnaies en direct avec des mises à jour sub-seconde des principales bourses."
+        },
+        "safe": {
+            "title": "Pratique Sans Risque",
+            "description": "Entraînez-vous au trading avec de l'argent virtuel. Apprenez de vos erreurs sans perdre de vrais fonds."
+        }
+    },
+    "common": {
+        "loading": "Chargement...",
+        "error": "Une erreur s'est produite",
+        "retry": "Réessayer",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "save": "Enregistrer",
+        "back": "Retour",
+        "next": "Suivant",
+        "finish": "Terminer",
+        "close": "Fermer"
+    }
+}

@@ -1,0 +1,195 @@
+{
+    "nav": {
+        "home": "Home",
+        "trading": "Trading",
+        "simulation": "Simulation",
+        "pricing": "Pricing",
+        "support": "Support",
+        "login": "Login",
+        "signup": "Sign Up"
+    },
+    "hero": {
+        "title": "Master Crypto Trading with AI",
+        "subtitle": "Real-time market data • AI predictions • Risk-free practice environment",
+        "cta": "Try It Now",
+        "watchDemo": "Watch Demo",
+        "trustedBy": "Trusted by {{count}} traders worldwide"
+    },
+    "features": {
+        "title": "What is Quantix?",
+        "subtitle": "The smarter way to learn cryptocurrency trading",
+        "ai": {
+            "title": "AI-Powered Predictions",
+            "description": "Get intelligent market analysis and trading suggestions powered by advanced machine learning models trained on real market data."
+        },
+        "realtime": {
+            "title": "Real-Time Market Data",
+            "description": "Access live cryptocurrency prices with sub-second updates from leading exchanges. Never miss a market movement."
+        },
+        "safe": {
+            "title": "Risk-Free Practice",
+            "description": "Practice trading with virtual money. Learn from mistakes without losing real funds. Perfect for beginners and pros alike."
+        }
+    },
+    "cta": {
+        "title": "Ready to Start Trading Smarter?",
+        "subtitle": "Join thousands of traders who are improving their skills with Quantix",
+        "button": "Start Free Trial",
+        "noCard": "No credit card required",
+        "virtualMoney": "$500 virtual money included"
+    },
+    "chart": {
+        "selectCrypto": "Select cryptocurrency",
+        "searchCrypto": "Search...",
+        "timeframes": {
+            "1m": "1m",
+            "15m": "15m",
+            "30m": "30m",
+            "1h": "1H",
+            "4h": "4H",
+            "1d": "1D"
+        },
+        "tooltip": {
+            "open": "Open",
+            "high": "High",
+            "low": "Low",
+            "close": "Close",
+            "change": "Change",
+            "volume": "Volume"
+        },
+        "loading": "Loading chart data...",
+        "error": "Failed to load chart data"
+    },
+    "ai": {
+        "title": "AI Trading Assistant",
+        "greeting": "Hello! I'm your AI trading assistant. How can I help you analyze the market today?",
+        "placeholder": "Ask about market trends, analysis, or trading suggestions...",
+        "send": "Send",
+        "analyzing": "Analyzing market data...",
+        "dailyQueries": "Daily Queries",
+        "remaining": "{{used}}/{{total}}",
+        "upgrade": "Upgrade to Premium",
+        "actions": {
+            "analyze": "Analyze",
+            "predict": "Predict",
+            "risk": "Risk Assessment"
+        },
+        "response": {
+            "sentiment": "Sentiment",
+            "action": "Suggested Action",
+            "confidence": "Confidence",
+            "risk": "Risk Level",
+            "bullish": "Bullish",
+            "bearish": "Bearish",
+            "neutral": "Neutral",
+            "buy": "Buy",
+            "sell": "Sell",
+            "hold": "Hold",
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+        }
+    },
+    "wallet": {
+        "title": "Virtual Wallet",
+        "balance": "Balance",
+        "portfolio": "Portfolio Value",
+        "profit": "Total Profit/Loss",
+        "holdings": "Holdings",
+        "noHoldings": "No holdings yet",
+        "simulationWarning": "This is a virtual wallet. No real money is involved. Profits/losses are for practice only."
+    },
+    "trading": {
+        "buy": "Buy",
+        "sell": "Sell",
+        "amount": "Amount (USD)",
+        "price": "Current Price",
+        "receive": "You'll receive",
+        "available": "Available",
+        "execute": "Execute Trade",
+        "fee": "Fee (0.1%)",
+        "success": "Trade executed successfully!",
+        "error": {
+            "insufficientBalance": "Insufficient balance",
+            "insufficientHoldings": "Insufficient holdings",
+            "invalidAmount": "Invalid amount"
+        }
+    },
+    "pricing": {
+        "title": "Choose Your Plan",
+        "subtitle": "Start free, upgrade anytime. No credit card required.",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "save": "Save {{percent}}%",
+        "popular": "Most Popular",
+        "current": "Current Plan",
+        "getStarted": "Get Started",
+        "upgrade": "Upgrade Now",
+        "tiers": {
+            "free": {
+                "name": "Free",
+                "price": "$0"
+            },
+            "starter": {
+                "name": "Starter",
+                "price": "$9.99"
+            },
+            "pro": {
+                "name": "Pro",
+                "price": "$14.99"
+            },
+            "ultimate": {
+                "name": "Ultimate",
+                "price": "$19.99"
+            }
+        },
+        "features": {
+            "virtualMoney": "{{amount}} starting balance",
+            "dailyBonus": "{{amount}} daily bonus",
+            "aiQueries": "{{count}} AI queries/day",
+            "unlimitedQueries": "Unlimited AI queries",
+            "basicAI": "Basic AI model",
+            "advancedAI": "Advanced AI model",
+            "premiumAI": "Premium AI model",
+            "eliteAI": "Elite AI model",
+            "adFree": "Ad-free experience",
+            "communitySupport": "Community support",
+            "emailSupport": "Email support",
+            "prioritySupport": "Priority support",
+            "dedicatedSupport": "Dedicated support",
+            "devContact": "Direct developer contact"
+        }
+    },
+    "settings": {
+        "title": "Settings",
+        "theme": "Theme",
+        "language": "Language",
+        "notifications": "Notifications",
+        "profile": "Profile",
+        "themes": {
+            "dark": "Dark",
+            "light": "Light",
+            "ocean": "Ocean",
+            "sunset": "Sunset",
+            "forest": "Forest"
+        }
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "retry": "Try again",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "save": "Save",
+        "back": "Back",
+        "next": "Next",
+        "finish": "Finish",
+        "close": "Close"
+    },
+    "footer": {
+        "copyright": "© 2024 Quantix. All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "contact": "Contact Us"
+    }
+}

@@ -1,0 +1,75 @@
+{
+    "nav": {
+        "home": "Home",
+        "trading": "Handelen",
+        "simulation": "Simulatie",
+        "pricing": "Prijzen",
+        "support": "Ondersteuning",
+        "login": "Inloggen",
+        "signup": "Registreren"
+    },
+    "hero": {
+        "title": "Master Crypto Trading met AI",
+        "subtitle": "Real-time marktdata • AI voorspellingen • Risicovrije oefenomgeving",
+        "cta": "Probeer Nu",
+        "watchDemo": "Bekijk Demo",
+        "trustedBy": "Vertrouwd door {{count}} handelaren wereldwijd"
+    },
+    "features": {
+        "title": "Wat is Quantix?",
+        "subtitle": "De slimmere manier om cryptocurrency trading te leren",
+        "ai": {
+            "title": "AI-Gestuurde Voorspellingen",
+            "description": "Krijg intelligente marktanalyse en handelssuggesties aangedreven door geavanceerde machine learning modellen getraind op echte marktdata."
+        },
+        "realtime": {
+            "title": "Real-Time Marktdata",
+            "description": "Toegang tot live cryptocurrency prijzen met updates per seconde van toonaangevende beurzen. Mis nooit een marktbeweging."
+        },
+        "safe": {
+            "title": "Risicovrij Oefenen",
+            "description": "Oefen handel met virtueel geld. Leer van fouten zonder echt geld te verliezen. Perfect voor beginners en professionals."
+        }
+    },
+    "cta": {
+        "title": "Klaar om Slimmer te Handelen?",
+        "subtitle": "Sluit je aan bij duizenden handelaren die hun vaardigheden verbeteren met Quantix",
+        "button": "Start Gratis Proefperiode",
+        "noCard": "Geen creditcard vereist",
+        "virtualMoney": "$500 virtueel geld inbegrepen"
+    },
+    "chart": {
+        "selectCrypto": "Selecteer cryptocurrency",
+        "searchCrypto": "Zoeken...",
+        "timeframes": {
+            "1m": "1m",
+            "15m": "15m",
+            "30m": "30m",
+            "1h": "1U",
+            "4h": "4U",
+            "1d": "1D"
+        },
+        "tooltip": {
+            "open": "Open",
+            "high": "Hoog",
+            "low": "Laag",
+            "close": "Sluit",
+            "change": "Verandering",
+            "volume": "Volume"
+        },
+        "loading": "Grafiekdata laden...",
+        "error": "Kan grafiekdata niet laden"
+    },
+    "common": {
+        "loading": "Laden...",
+        "error": "Er ging iets mis",
+        "retry": "Opnieuw proberen",
+        "cancel": "Annuleren",
+        "confirm": "Bevestigen",
+        "save": "Opslaan",
+        "back": "Terug",
+        "next": "Volgende",
+        "finish": "Voltooien",
+        "close": "Sluiten"
+    }
+}

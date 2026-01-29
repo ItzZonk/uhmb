@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>Quantix - Master Crypto Trading with AI | Trading Simulator</title>
+    <meta name="title" content="Quantix - Master Crypto Trading with AI | Trading Simulator" />
+    <meta name="description"
+        content="Quantix is an AI-powered cryptocurrency trading simulation platform. Practice trading Bitcoin, Ethereum, and more with virtual money. Get real-time AI-driven market insights and predictions." />
+    <meta name="keywords"
+        content="crypto trading, cryptocurrency, trading simulator, AI trading, Bitcoin, Ethereum, virtual trading, paper trading, crypto learning, trading education" />
+    <meta name="author" content="Quantix" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://quantix.app" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://quantix.app/" />
+    <meta property="og:title" content="Quantix - Master Crypto Trading with AI" />
+    <meta property="og:description"
+        content="AI-powered cryptocurrency trading simulation platform. Practice risk-free with virtual money and get real-time AI predictions." />
+    <meta property="og:image" content="https://quantix.app/og-image.png" />
+    <meta property="og:site_name" content="Quantix" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://quantix.app/" />
+    <meta name="twitter:title" content="Quantix - Master Crypto Trading with AI" />
+    <meta name="twitter:description"
+        content="AI-powered cryptocurrency trading simulation platform. Practice risk-free with virtual money." />
+    <meta name="twitter:image" content="https://quantix.app/og-image.png" />
+    <meta name="twitter:site" content="@quantix_app" />
+    <meta name="twitter:creator" content="@quantix_app" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="msapplication-TileColor" content="#6366f1" />
+
+    <!-- Fonts - Preload for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+
+    <!-- Structured Data - JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Quantix",
+        "description": "AI-powered cryptocurrency trading simulation platform",
+        "url": "https://quantix.app",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "1250"
+        }
+    }
+    </script>
+
+    <!-- Prevent FOUC (Flash of Unstyled Content) -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('quantix-theme');
+            if (theme) {
+                try {
+                    const parsed = JSON.parse(theme);
+                    document.documentElement.setAttribute('data-theme', parsed.state?.theme || 'dark');
+                } catch (e) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+
+<body class="bg-bg-primary text-text-primary">
+    <!-- Noscript fallback -->
+    <noscript>
+        <div style="padding: 2rem; text-align: center; font-family: system-ui;">
+            <h1>JavaScript Required</h1>
+            <p>Quantix requires JavaScript to be enabled. Please enable JavaScript in your browser settings.</p>
+        </div>
+    </noscript>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

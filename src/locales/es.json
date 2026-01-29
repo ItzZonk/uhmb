@@ -1,0 +1,46 @@
+{
+    "nav": {
+        "home": "Inicio",
+        "trading": "Trading",
+        "simulation": "Simulación",
+        "pricing": "Precios",
+        "support": "Soporte",
+        "login": "Iniciar Sesión",
+        "signup": "Registrarse"
+    },
+    "hero": {
+        "title": "Domina el Trading Cripto con IA",
+        "subtitle": "Datos de mercado en tiempo real • Predicciones IA • Entorno de práctica sin riesgo",
+        "cta": "Pruébalo Ahora",
+        "watchDemo": "Ver Demo",
+        "trustedBy": "Confiado por {{count}} traders en todo el mundo"
+    },
+    "features": {
+        "title": "¿Qué es Quantix?",
+        "subtitle": "La forma más inteligente de aprender trading de criptomonedas",
+        "ai": {
+            "title": "Predicciones con IA",
+            "description": "Obtén análisis de mercado inteligentes y sugerencias de trading impulsadas por modelos avanzados de aprendizaje automático."
+        },
+        "realtime": {
+            "title": "Datos de Mercado en Tiempo Real",
+            "description": "Accede a precios de criptomonedas en vivo con actualizaciones de subsegundos de los principales exchanges."
+        },
+        "safe": {
+            "title": "Práctica Sin Riesgo",
+            "description": "Practica trading con dinero virtual. Aprende de errores sin perder fondos reales."
+        }
+    },
+    "common": {
+        "loading": "Cargando...",
+        "error": "Algo salió mal",
+        "retry": "Intentar de nuevo",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "save": "Guardar",
+        "back": "Atrás",
+        "next": "Siguiente",
+        "finish": "Finalizar",
+        "close": "Cerrar"
+    }
+}
