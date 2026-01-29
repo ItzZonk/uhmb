@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantix - AI Crypto Trading Simulator</title>
+
+    <!-- SEO -->
+    <meta name="description"
+        content="Learn crypto trading risk-free with AI-powered analysis. Real-time charts, virtual $500 wallet, limit orders, and more.">
+    <meta name="keywords" content="crypto, trading, simulator, bitcoin, AI, education">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Lightweight Charts CDN -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        nav button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .stat-change.up {
+            color: var(--success);
+        }
+
+        .stat-change.down {
+            color: var(--danger);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chart-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .crypto-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f7931a, #ff9f00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .crypto-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .crypto-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .price-up {
+            color: var(--success);
+        }
+
+        .price-down {
+            color: var(--danger);
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .timeframe-btn {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timeframe-btn:hover,
+        .timeframe-btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        #chart-container {
+            height: 450px;
+        }
+
+        /* Symbol Selector */
+        .symbol-selector {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .symbol-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .symbol-btn:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .symbol-btn.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* AI Chat Section */
+        .ai-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 280px);
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.1));
+        }
+
+        .ai-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .online-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 90%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: var(--bg-tertiary);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--accent-primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .quick-prompts {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .prompt-btn {
+            padding: 8px 14px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .prompt-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .ai-input {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ai-input input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .ai-input input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .ai-input button {
+            padding: 12px 20px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-input button:hover {
+            background: var(--accent-secondary);
+        }
+
+        .query-limit {
+            padding: 8px 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .limit-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .limit-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            transition: width 0.3s;
+        }
+
+        /* Trading Panel */
+        .trading-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .panel-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .panel-tab.buy {
+            color: var(--success);
+        }
+
+        .panel-tab.sell {
+            color: var(--danger);
+        }
+
+        .panel-tab.active.buy {
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .panel-tab.active.sell {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .order-types {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .order-type {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .order-type.active {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .trade-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .trade-btn.buy {
+            background: var(--success);
+            color: white;
+        }
+
+        .trade-btn.sell {
+            background: var(--danger);
+            color: white;
+        }
+
+        .trade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon">Q</div>
+                Quantix
+            </div>
+            <nav>
+                <button class="nav-btn active">Trading</button>
+                <button class="nav-btn">Simulation</button>
+                <button class="nav-btn">Pricing</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-label">💰 Portfolio Value</div>
+                <div class="stat-value" id="portfolio-value">$500.00</div>
+                <div class="stat-change up" id="portfolio-change">+$0.00 (0%)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">⚡ BTC Price</div>
+                <div class="stat-value" id="btc-price">$--,---</div>
+                <div class="stat-change" id="btc-change">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">💵 Cash Balance</div>
+                <div class="stat-value" id="cash-balance">$500.00</div>
+                <div class="stat-change">0 assets held</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📋 Active Orders</div>
+                <div class="stat-value" id="active-orders">0</div>
+                <div class="stat-change">No pending orders</div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <!-- Symbol Selector -->
+                <div class="symbol-selector">
+                    <button class="symbol-btn active" data-symbol="BTCUSDT">BTC</button>
+                    <button class="symbol-btn" data-symbol="ETHUSDT">ETH</button>
+                    <button class="symbol-btn" data-symbol="SOLUSDT">SOL</button>
+                    <button class="symbol-btn" data-symbol="XRPUSDT">XRP</button>
+                    <button class="symbol-btn" data-symbol="DOGEUSDT">DOGE</button>
+                    <button class="symbol-btn" data-symbol="ADAUSDT">ADA</button>
+                    <button class="symbol-btn" data-symbol="AVAXUSDT">AVAX</button>
+                    <button class="symbol-btn" data-symbol="DOTUSDT">DOT</button>
+                </div>
+
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <div class="crypto-icon" id="crypto-icon">₿</div>
+                        <div>
+                            <div class="crypto-name" id="crypto-name">Bitcoin / USDT</div>
+                            <div class="crypto-price" id="crypto-price">$--,---</div>
+                        </div>
+                    </div>
+                    <div class="chart-controls">
+                        <button class="timeframe-btn" data-tf="1m">1m</button>
+                        <button class="timeframe-btn" data-tf="5m">5m</button>
+                        <button class="timeframe-btn active" data-tf="15m">15m</button>
+                        <button class="timeframe-btn" data-tf="1h">1H</button>
+                        <button class="timeframe-btn" data-tf="4h">4H</button>
+                        <button class="timeframe-btn" data-tf="1d">1D</button>
+                    </div>
+                </div>
+                <div id="chart-container"></div>
+
+                <!-- Trading Panel -->
+                <div class="trading-panel">
+                    <div class="panel-tabs">
+                        <button class="panel-tab buy active" id="buy-tab">Buy</button>
+                        <button class="panel-tab sell" id="sell-tab">Sell</button>
+                    </div>
+                    <div class="order-types">
+                        <button class="order-type active" data-type="market">Market</button>
+                        <button class="order-type" data-type="limit">Limit</button>
+                        <button class="order-type" data-type="stop-loss">Stop-Loss</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Amount (USD)</label>
+                        <input type="number" id="trade-amount" value="100" min="1" step="1">
+                    </div>
+                    <div class="input-group" id="limit-price-group" style="display: none;">
+                        <label>Limit Price</label>
+                        <input type="number" id="limit-price" placeholder="Enter price...">
+                    </div>
+                    <button class="trade-btn buy" id="trade-btn">Buy BTC</button>
+                </div>
+            </div>
+
+            <!-- AI Section -->
+            <div class="ai-section">
+                <div class="ai-header">
+                    <div class="ai-icon">🤖</div>
+                    <div>
+                        <div style="font-weight: 600;">Quantix AI</div>
+                        <div class="ai-status">
+                            <span class="online-dot"></span>
+                            Online • BTC/USDT
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-messages" id="ai-messages">
+                    <div class="message assistant animate-in">
+                        👋 Hello! I'm <strong>Quantix AI</strong>, your trading assistant.<br><br>
+                        I can help you with:<br>
+                        • 📊 <strong>Analyze</strong> - Technical analysis<br>
+                        • 🔮 <strong>Predict</strong> - Price forecasts<br>
+                        • ⚠️ <strong>Risk</strong> - Trade assessment<br><br>
+                        What would you like to know?
+                    </div>
+                </div>
+                <div class="quick-prompts">
+                    <button class="prompt-btn" data-prompt="Analyze BTC">📊 Analyze</button>
+                    <button class="prompt-btn" data-prompt="Predict BTC price">🔮 Predict</button>
+                    <button class="prompt-btn" data-prompt="Risk assessment">⚠️ Risk</button>
+                    <button class="prompt-btn" data-prompt="Trading strategy">📈 Strategy</button>
+                </div>
+                <div class="ai-input">
+                    <input type="text" id="ai-input" placeholder="Ask about trading...">
+                    <button id="ai-send">Send</button>
+                </div>
+                <div class="query-limit">
+                    <span>⚡ 3/3 queries remaining</span>
+                    <div class="limit-bar">
+                        <div class="limit-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ============================================
+        // STATE
+        // ============================================
+        const state = {
+            symbol: 'BTCUSDT',
+            interval: '15m',
+            balance: 500,
+            holdings: {},
+            chart: null,
+            candleSeries: null,
+            ws: null,
+            prices: {},
+            orderType: 'market',
+            tradeSide: 'buy',
+            aiQueries: 3,
+            maxQueries: 3
+        };
+
+        const CRYPTO_INFO = {
+            BTCUSDT: { name: 'Bitcoin', short: 'BTC', icon: '₿', color: '#f7931a' },
+            ETHUSDT: { name: 'Ethereum', short: 'ETH', icon: 'Ξ', color: '#627eea' },
+            SOLUSDT: { name: 'Solana', short: 'SOL', icon: 'S', color: '#00d18c' },
+            XRPUSDT: { name: 'XRP', short: 'XRP', icon: 'X', color: '#00aae4' },
+            DOGEUSDT: { name: 'Dogecoin', short: 'DOGE', icon: 'Ð', color: '#c3a634' },
+            ADAUSDT: { name: 'Cardano', short: 'ADA', icon: 'A', color: '#0033ad' },
+            AVAXUSDT: { name: 'Avalanche', short: 'AVAX', icon: 'A', color: '#e84142' },
+            DOTUSDT: { name: 'Polkadot', short: 'DOT', icon: '●', color: '#e6007a' }
+        };
+
+        // ============================================
+        // CHART INITIALIZATION
+        // ============================================
+        function initChart() {
+            const container = document.getElementById('chart-container');
+            state.chart = LightweightCharts.createChart(container, {
+                width: container.clientWidth,
+                height: 450,
+                layout: {
+                    background: { type: 'solid', color: '#12121a' },
+                    textColor: '#a0a0b0'
+                },
+                grid: {
+                    vertLines: { color: 'rgba(255,255,255,0.03)' },
+                    horzLines: { color: 'rgba(255,255,255,0.03)' }
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal
+                },
+                rightPriceScale: {
+                    borderColor: 'rgba(255,255,255,0.1)'
+                },
+                timeScale: {
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    timeVisible: true
+                }
+            });
+
+            state.candleSeries = state.chart.addCandlestickSeries({
+                upColor: '#22c55e',
+                downColor: '#ef4444',
+                borderUpColor: '#22c55e',
+                borderDownColor: '#ef4444',
+                wickUpColor: '#22c55e',
+                wickDownColor: '#ef4444'
+            });
+
+            window.addEventListener('resize', () => {
+                state.chart.resize(container.clientWidth, 450);
+            });
+
+            loadHistoricalData();
+        }
+
+        // ============================================
+        // DATA FETCHING
+        // ============================================
+        async function loadHistoricalData() {
+            try {
+                const url = `https://api.binance.com/api/v3/klines?symbol=${state.symbol}&interval=${state.interval}&limit=500`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                const candles = data.map(k => ({
+                    time: k[0] / 1000,
+                    open: parseFloat(k[1]),
+                    high: parseFloat(k[2]),
+                    low: parseFloat(k[3]),
+                    close: parseFloat(k[4])
+                }));
+
+                state.candleSeries.setData(candles);
+                updatePrice(candles[candles.length - 1].close);
+                connectWebSocket();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function connectWebSocket() {
+            if (state.ws) state.ws.close();
+
+            const stream = `${state.symbol.toLowerCase()}@kline_${state.interval}`;
+            state.ws = new WebSocket(`wss://stream.binance.com:9443/ws/${stream}`);
+
+            state.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.k) {
+                    const candle = {
+                        time: data.k.t / 1000,
+                        open: parseFloat(data.k.o),
+                        high: parseFloat(data.k.h),
+                        low: parseFloat(data.k.l),
+                        close: parseFloat(data.k.c)
+                    };
+                    state.candleSeries.update(candle);
+                    updatePrice(candle.close);
+                }
+            };
+        }
+
+        function updatePrice(price) {
+            state.prices[state.symbol] = price;
+            const info = CRYPTO_INFO[state.symbol];
+
+            document.getElementById('crypto-price').textContent = `$${price.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: price < 1 ? 6 : 2
+            })}`;
+            document.getElementById('btc-price').textContent = `$${price.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+
+            updateUI();
+        }
+
+        // ============================================
+        // UI UPDATES
+        // ============================================
+        function updateUI() {
+            const info = CRYPTO_INFO[state.symbol];
+
+            document.getElementById('crypto-name').textContent = `${info.name} / USDT`;
+            document.getElementById('crypto-icon').textContent = info.icon;
+            document.getElementById('crypto-icon').style.background = `linear-gradient(135deg, ${info.color}, ${info.color}dd)`;
+
+            document.getElementById('trade-btn').textContent = `${state.tradeSide === 'buy' ? 'Buy' : 'Sell'} ${info.short}`;
+            document.getElementById('cash-balance').textContent = `$${state.balance.toFixed(2)}`;
+
+            // Holdings count
+            const holdingsCount = Object.keys(state.holdings).length;
+            document.querySelector('.stat-card:nth-child(3) .stat-change').textContent =
+                `${holdingsCount} asset${holdingsCount !== 1 ? 's' : ''} held`;
+        }
+
+        // ============================================
+        // TRADING
+        // ============================================
+        function executeTrade() {
+            const amount = parseFloat(document.getElementById('trade-amount').value);
+            const price = state.prices[state.symbol];
+            const info = CRYPTO_INFO[state.symbol];
+
+            if (state.tradeSide === 'buy') {
+                const fee = amount * 0.001;
+                const total = amount + fee;
+
+                if (total > state.balance) {
+                    alert('Insufficient balance!');
+                    return;
+                }
+
+                const cryptoAmount = amount / price;
+                state.balance -= total;
+
+                if (!state.holdings[state.symbol]) {
+                    state.holdings[state.symbol] = { amount: 0, avgPrice: 0 };
+                }
+
+                const holding = state.holdings[state.symbol];
+                const totalValue = (holding.amount * holding.avgPrice) + amount;
+                holding.amount += cryptoAmount;
+                holding.avgPrice = totalValue / holding.amount;
+
+                addAIMessage(`✅ Bought ${cryptoAmount.toFixed(6)} ${info.short} at $${price.toLocaleString()}\nFee: $${fee.toFixed(2)}`);
+            } else {
+                const holding = state.holdings[state.symbol];
+                if (!holding || holding.amount <= 0) {
+                    alert('No holdings to sell!');
+                    return;
+                }
+
+                const sellAmount = Math.min(amount / price, holding.amount);
+                const value = sellAmount * price;
+                const fee = value * 0.001;
+
+                holding.amount -= sellAmount;
+                state.balance += value - fee;
+
+                if (holding.amount <= 0.00000001) {
+                    delete state.holdings[state.symbol];
+                }
+
+                addAIMessage(`✅ Sold ${sellAmount.toFixed(6)} ${info.short} at $${price.toLocaleString()}\nReceived: $${(value - fee).toFixed(2)}`);
+            }
+
+            updateUI();
+        }
+
+        // ============================================
+        // AI ASSISTANT
+        // ============================================
+        function addAIMessage(content, isUser = false) {
+            const container = document.getElementById('ai-messages');
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user' : 'assistant'} animate-in`;
+            div.innerHTML = content.replace(/\n/g, '<br>');
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendAIMessage(message) {
+            if (state.aiQueries <= 0) {
+                addAIMessage('⚠️ Daily limit reached! Upgrade for more queries.');
+                return;
+            }
+
+            state.aiQueries--;
+            updateQueryLimit();
+
+            addAIMessage(message, true);
+
+            // Simulate AI response
+            setTimeout(() => {
+                const price = state.prices[state.symbol] || 0;
+                const info = CRYPTO_INFO[state.symbol];
+                const response = generateAIResponse(message, info.short, price);
+                addAIMessage(response);
+            }, 1000 + Math.random() * 500);
+        }
+
+        function generateAIResponse(message, symbol, price) {
+            const lower = message.toLowerCase();
+
+            if (lower.includes('analyze') || lower.includes('analysis')) {
+                const rsi = (45 + Math.random() * 30).toFixed(1);
+                const trend = rsi > 60 ? 'Bullish' : rsi < 40 ? 'Bearish' : 'Neutral';
+                return `📊 <strong>${symbol} Analysis</strong><br><br>` +
+                    `<strong>Price:</strong> $${price.toLocaleString()}<br>` +
+                    `<strong>RSI:</strong> ${rsi} (${rsi > 70 ? 'Overbought' : rsi < 30 ? 'Oversold' : 'Neutral'})<br>` +
+                    `<strong>Trend:</strong> ${trend}<br><br>` +
+                    `⚠️ <em>Simulated analysis for education only</em>`;
+            }
+
+            if (lower.includes('predict') || lower.includes('price')) {
+                const dir = Math.random() > 0.5 ? 'bullish' : 'bearish';
+                const conf = (55 + Math.random() * 35).toFixed(0);
+                const emoji = dir === 'bullish' ? '🟢' : '🔴';
+                return `${emoji} <strong>${symbol} Prediction</strong><br><br>` +
+                    `<strong>Outlook:</strong> ${dir.toUpperCase()}<br>` +
+                    `<strong>Confidence:</strong> ${conf}%<br><br>` +
+                    `⚠️ <em>AI prediction for simulation only</em>`;
+            }
+
+            if (lower.includes('risk')) {
+                const risk = Math.random();
+                const level = risk > 0.7 ? 'High 🔴' : risk > 0.4 ? 'Medium 🟡' : 'Low 🟢';
+                return `⚠️ <strong>${symbol} Risk Assessment</strong><br><br>` +
+                    `<strong>Risk Level:</strong> ${level}<br>` +
+                    `<strong>Position Size:</strong> ${risk > 0.6 ? '1-2%' : '2-5%'} recommended<br><br>` +
+                    `📚 <em>Never invest more than you can afford to lose</em>`;
+            }
+
+            return `I can help you analyze <strong>${symbol}</strong>!<br><br>` +
+                `Try asking:<br>` +
+                `• "Analyze ${symbol}"<br>` +
+                `• "Predict price"<br>` +
+                `• "Risk assessment"`;
+        }
+
+        function updateQueryLimit() {
+            document.querySelector('.query-limit span').textContent =
+                `⚡ ${state.aiQueries}/${state.maxQueries} queries remaining`;
+            document.querySelector('.limit-fill').style.width =
+                `${(state.aiQueries / state.maxQueries) * 100}%`;
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        document.querySelectorAll('.symbol-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.symbol-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.symbol = btn.dataset.symbol;
+                loadHistoricalData();
+            });
+        });
+
+        document.querySelectorAll('.timeframe-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.interval = btn.dataset.tf;
+                loadHistoricalData();
+            });
+        });
+
+        document.querySelectorAll('.order-type').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.order-type').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.orderType = btn.dataset.type;
+                document.getElementById('limit-price-group').style.display =
+                    state.orderType === 'market' ? 'none' : 'block';
+            });
+        });
+
+        document.getElementById('buy-tab').addEventListener('click', () => {
+            state.tradeSide = 'buy';
+            document.getElementById('buy-tab').classList.add('active');
+            document.getElementById('sell-tab').classList.remove('active');
+            document.getElementById('trade-btn').className = 'trade-btn buy';
+            updateUI();
+        });
+
+        document.getElementById('sell-tab').addEventListener('click', () => {
+            state.tradeSide = 'sell';
+            document.getElementById('sell-tab').classList.add('active');
+            document.getElementById('buy-tab').classList.remove('active');
+            document.getElementById('trade-btn').className = 'trade-btn sell';
+            updateUI();
+        });
+
+        document.getElementById('trade-btn').addEventListener('click', executeTrade);
+
+        document.getElementById('ai-send').addEventListener('click', () => {
+            const input = document.getElementById('ai-input');
+            if (input.value.trim()) {
+                sendAIMessage(input.value.trim());
+                input.value = '';
+            }
+        });
+
+        document.getElementById('ai-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('ai-send').click();
+        });
+
+        document.querySelectorAll('.prompt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sendAIMessage(btn.dataset.prompt);
+            });
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        initChart();
+    </script>
+</body>
+
+</html>
